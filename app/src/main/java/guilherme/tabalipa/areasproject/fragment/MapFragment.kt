@@ -8,32 +8,26 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 
 import guilherme.tabalipa.areasproject.R
-import android.Manifest.permission
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.support.v4.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
 import guilherme.tabalipa.areasproject.utils.PermissionUtils
-
 
 /**
  * A simple [Fragment] subclass.
  */
 class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private val LOCATION_PERMISSION_REQUEST_CODE = 1
-
-    private val mPermissionDenied = false
-
     private lateinit var mMap: GoogleMap
+    private lateinit var mFusedLocationClient : FusedLocationProviderClient
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -42,6 +36,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
         val mapFragment =  childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
         return v
     }
 
@@ -58,8 +53,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
                 Manifest.permission.ACCESS_COARSE_LOCATION)
 
         if (ok) {
-            // Access to the location has been granted to the app.
             mMap.isMyLocationEnabled = true
+
+            mFusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val myLocation = LatLng(location.latitude, location.longitude)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation))
+                }
+            }
         }
     }
 
@@ -69,6 +70,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
         for (result in grantResults) {
             if (result == PackageManager.PERMISSION_GRANTED) {
                 mMap.isMyLocationEnabled = true
+
+                mFusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    if (location != null) {
+                        val myLocation = LatLng(location.latitude, location.longitude)
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation))
+                    }
+                }
                 return
             }
         }

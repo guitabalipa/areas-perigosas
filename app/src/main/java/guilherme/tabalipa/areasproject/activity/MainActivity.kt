@@ -1,67 +1,30 @@
 package guilherme.tabalipa.areasproject.activity
 
-import android.support.design.widget.TabLayout
-import android.support.v7.app.AppCompatActivity
-
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.support.v4.content.ContextCompat
 import guilherme.tabalipa.areasproject.R
-import guilherme.tabalipa.areasproject.fragment.MapFragment
-import guilherme.tabalipa.areasproject.fragment.MarkedPlacesFragment
+import guilherme.tabalipa.areasproject.adapters.TabsAdapter
+import guilherme.tabalipa.areasproject.extensions.setupToolbar
 
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
-
-    private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setSupportActionBar(toolbar)
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+        setupToolbar(R.id.toolbar, getString(R.string.app_name), false)
 
-        // Set up the ViewPager with the sections adapter.
-        container.adapter = mSectionsPagerAdapter
-
-        container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
-        tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
-
+        setupViewPagerTabs()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
+    private fun setupViewPagerTabs() {
+        container.offscreenPageLimit = 1
+        container.adapter = TabsAdapter(context, supportFragmentManager)
+        tabs.setupWithViewPager(container)
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-
-        if (id == R.id.action_exit) {
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-
-        override fun getItem(position: Int): Fragment {
-            when (position) {
-                0 -> return MapFragment()
-                else -> return MarkedPlacesFragment()
-            }
-        }
-
-        override fun getCount(): Int {
-            return 2
-        }
+        val cor = ContextCompat.getColor(context, R.color.white)
+        tabs.setTabTextColors(cor, cor)
     }
 }
