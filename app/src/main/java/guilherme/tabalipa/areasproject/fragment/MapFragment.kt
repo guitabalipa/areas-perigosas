@@ -18,6 +18,7 @@ import android.content.pm.PackageManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import guilherme.tabalipa.areasproject.utils.PermissionUtils
 
@@ -58,7 +59,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
             mFusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
                     val myLocation = LatLng(location.latitude, location.longitude)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation))
+//                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation))
+                    animateCamera(myLocation)
                 }
             }
         }
@@ -74,11 +76,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
                 mFusedLocationClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
                         val myLocation = LatLng(location.latitude, location.longitude)
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation))
+//                        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation))
+                        animateCamera(myLocation)
                     }
                 }
                 return
             }
         }
+    }
+
+    private fun animateCamera(myLocation: LatLng) {
+        val cameraPosition = CameraPosition.Builder()
+                .target(myLocation)
+                .zoom(15f)
+                .bearing(90f)
+                .tilt(40f)
+                .build()
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 }
