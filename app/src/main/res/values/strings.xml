@@ -5,4 +5,7 @@
     <string name="action_exit">Sair</string>
     <string name="tab_map">MAPA</string>
     <string name="tab_places">LUGARES</string>
+    <string name="add_description">Adicione uma descrição:</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Salvar</string>
 </resources>

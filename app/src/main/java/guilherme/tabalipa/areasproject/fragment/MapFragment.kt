@@ -14,13 +14,18 @@ import com.google.android.gms.maps.SupportMapFragment
 
 import guilherme.tabalipa.areasproject.R
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
+import android.app.Dialog
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import guilherme.tabalipa.areasproject.utils.PermissionUtils
+import com.google.android.gms.maps.model.MarkerOptions
+import android.content.DialogInterface
+import com.google.android.gms.maps.model.Marker
+
 
 /**
  * A simple [Fragment] subclass.
@@ -38,51 +43,46 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
         mapFragment.getMapAsync(this)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
         return v
     }
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        enableMyLocation()
-    }
+        val permission = ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION)
 
-    @SuppressLint("MissingPermission")
-    private fun enableMyLocation() {
-        val ok = PermissionUtils.validate(activity, 1,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-
-        if (ok) {
+        if (permission == 0) {
             mMap.isMyLocationEnabled = true
 
             mFusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
                     val myLocation = LatLng(location.latitude, location.longitude)
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation))
                     animateCamera(myLocation)
                 }
             }
         }
+
+        mMap.setOnMapClickListener { latLng ->
+            val marker = mMap.addMarker(MarkerOptions().position(latLng))
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+            dialog(marker)
+        }
     }
 
-    @SuppressLint("MissingPermission")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        for (result in grantResults) {
-            if (result == PackageManager.PERMISSION_GRANTED) {
-                mMap.isMyLocationEnabled = true
+    private fun dialog(marker: Marker) {
+        val builder = AlertDialog.Builder(activity)
+        val inflater = activity.layoutInflater
 
-                mFusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                    if (location != null) {
-                        val myLocation = LatLng(location.latitude, location.longitude)
-//                        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation))
-                        animateCamera(myLocation)
-                    }
-                }
-                return
-            }
-        }
+        builder.setView(inflater.inflate(R.layout.dialog_description, null))
+                .setPositiveButton(R.string.save, DialogInterface.OnClickListener { dialog, id -> })
+                .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener { dialog, id ->
+                    marker.remove()
+                })
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private fun animateCamera(myLocation: LatLng) {
