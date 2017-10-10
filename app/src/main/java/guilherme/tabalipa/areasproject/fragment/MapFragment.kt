@@ -14,17 +14,13 @@ import com.google.android.gms.maps.SupportMapFragment
 
 import guilherme.tabalipa.areasproject.R
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import android.content.DialogInterface
-import com.google.android.gms.maps.model.Marker
+import android.widget.EditText
+import com.google.android.gms.maps.model.*
 
 
 /**
@@ -66,18 +62,27 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
 
         mMap.setOnMapClickListener { latLng ->
             val marker = mMap.addMarker(MarkerOptions().position(latLng))
+            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
             dialog(marker)
         }
+
+        mMap.setOnInfoWindowClickListener { marker ->
+            marker.hideInfoWindow()
+        }
+
     }
 
     private fun dialog(marker: Marker) {
         val builder = AlertDialog.Builder(activity)
-        val inflater = activity.layoutInflater
 
-        builder.setView(inflater.inflate(R.layout.dialog_description, null))
-                .setPositiveButton(R.string.save, DialogInterface.OnClickListener { dialog, id -> })
-                .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener { dialog, id ->
+        val view = View.inflate(activity, R.layout.dialog_description, null)
+        builder.setView(view)
+                .setPositiveButton(R.string.save, { dialog, id ->
+                    val edDesc = view.findViewById<EditText>(R.id.etDescription)
+                    marker.title = edDesc.text.toString()
+                })
+                .setNegativeButton(R.string.cancel, { dialog, id ->
                     marker.remove()
                 })
 
