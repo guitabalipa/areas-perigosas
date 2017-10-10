@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "349569719083",
+    "firebase_url": "https://areasproject-1505952318740.firebaseio.com",
+    "project_id": "areasproject-1505952318740",
+    "storage_bucket": "areasproject-1505952318740.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349569719083:android:ecf027d126a01cec",
+        "android_client_info": {
+          "package_name": "guilherme.tabalipa.areasproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "349569719083-ijji4lecau3hlrsc8v737ejbasdg06cu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "guilherme.tabalipa.areasproject",
+            "certificate_hash": "c1665693dfde0bb9dced76d765b710dc1f3f0d41"
+          }
+        },
+        {
+          "client_id": "349569719083-a65b1fdr2ilro1eb8fi3t0uul00qbtik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_gVPLvLF4g5HlYptb8LqI4I3CuF42SJ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "349569719083-a65b1fdr2ilro1eb8fi3t0uul00qbtik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
