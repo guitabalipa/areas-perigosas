@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import guilherme.tabalipa.areasproject.R
-import guilherme.tabalipa.areasproject.fragment.MapFragment
-import guilherme.tabalipa.areasproject.fragment.MarkedPlacesFragment
+import guilherme.tabalipa.areasproject.map.view.MapFragment
+import guilherme.tabalipa.areasproject.places.view.MarkedPlacesFragment
 
 /**
  * Created by guilhermetabalipa on 06/10/17.

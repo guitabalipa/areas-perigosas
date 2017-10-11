@@ -1,4 +1,4 @@
-package guilherme.tabalipa.areasproject.fragment
+package guilherme.tabalipa.areasproject.map.view
 
 
 import android.Manifest
@@ -14,6 +14,7 @@ import com.google.android.gms.maps.SupportMapFragment
 
 import guilherme.tabalipa.areasproject.R
 import android.annotation.SuppressLint
+import android.arch.lifecycle.Observer
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -21,6 +22,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import android.widget.EditText
 import com.google.android.gms.maps.model.*
+import guilherme.tabalipa.areasproject.map.model.Local
+import guilherme.tabalipa.areasproject.repositories.DataStore
 
 
 /**
@@ -60,11 +63,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
             }
         }
 
+        DataStore.updateLocais()
+
+        DataStore.liveDataListLocais.observe(activity, Observer<MutableList<Local>>{ locais ->
+            locais?.forEach { local: Local ->
+                val marker = mMap.addMarker(MarkerOptions().position(LatLng(local.latitude, local.longitude)))
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                marker.title = local.descricao
+            }
+        })
+
         mMap.setOnMapClickListener { latLng ->
-            val marker = mMap.addMarker(MarkerOptions().position(latLng))
-            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-            dialog(marker)
+            dialog(latLng)
         }
 
         mMap.setOnInfoWindowClickListener { marker ->
@@ -73,17 +83,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
 
     }
 
-    private fun dialog(marker: Marker) {
+    private fun dialog(latLng : LatLng) {
         val builder = AlertDialog.Builder(activity)
 
         val view = View.inflate(activity, R.layout.dialog_description, null)
         builder.setView(view)
                 .setPositiveButton(R.string.save, { dialog, id ->
                     val edDesc = view.findViewById<EditText>(R.id.etDescription)
-                    marker.title = edDesc.text.toString()
+                    val descricao = edDesc.text.toString()
+
+                    val local = Local(descricao, latLng.latitude, latLng.longitude)
+
+                    DataStore.saveLocal(local)
                 })
                 .setNegativeButton(R.string.cancel, { dialog, id ->
-                    marker.remove()
                 })
 
         val dialog = builder.create()

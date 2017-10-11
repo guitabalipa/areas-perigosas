@@ -1,4 +1,4 @@
-package guilherme.tabalipa.areasproject.fragment
+package guilherme.tabalipa.areasproject.places.view
 
 
 import android.os.Bundle
