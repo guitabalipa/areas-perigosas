@@ -19,11 +19,11 @@ open class DataStore {
 
         fun saveLocal(local : Local) {
 
-            val key = mDatabase.child("locais").push().key
+            mDatabase.child("locais").child(AreasApplication.getInstance().uid).push()
             val locaisValues = local.toMap()
 
             val childUpdates = HashMap<String, Any>()
-            childUpdates.put("/locais/" + key, locaisValues)
+            childUpdates.put("/locais/" + AreasApplication.getInstance().uid, locaisValues)
 
             mDatabase.updateChildren(childUpdates)
         }

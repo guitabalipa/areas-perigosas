@@ -8,4 +8,5 @@
     <string name="add_description">Adicione uma descrição:</string>
     <string name="cancel">Cancelar</string>
     <string name="save">Salvar</string>
+    <string name="alerta_login">Login não autorizado</string>
 </resources>

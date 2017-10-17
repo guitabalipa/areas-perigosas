@@ -22,4 +22,4 @@ class MarkedPlacesFragment : Fragment() {
         return inflater!!.inflate(R.layout.fragment_marked_places, container, false)
     }
 
-}// Required empty public constructor
+}
