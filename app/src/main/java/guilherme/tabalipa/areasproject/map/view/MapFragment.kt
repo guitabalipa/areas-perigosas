@@ -55,9 +55,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
         if (permission == 0) {
             mMap.isMyLocationEnabled = true
 
-            mFusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
-                    val myLocation = LatLng(location.latitude, location.longitude)
+            mFusedLocationClient.lastLocation.addOnSuccessListener {
+                if (it != null) {
+                    val myLocation = LatLng(it.latitude, it.longitude)
                     animateCamera(myLocation)
                 }
             }
@@ -65,20 +65,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
 
         DataStore.updateLocais()
 
-        DataStore.liveDataListLocais.observe(activity, Observer<MutableList<Local>>{ locais ->
-            locais?.forEach { local: Local ->
-                val marker = mMap.addMarker(MarkerOptions().position(LatLng(local.latitude, local.longitude)))
+        DataStore.liveDataListLocais.observe(activity, Observer<MutableList<Local>>{
+            it?.forEach {
+                val marker = mMap.addMarker(MarkerOptions().position(LatLng(it.latitude, it.longitude)))
                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-                marker.title = local.descricao
+                marker.title = it.descricao
             }
         })
 
-        mMap.setOnMapClickListener { latLng ->
-            dialog(latLng)
+        mMap.setOnMapClickListener {
+            dialog(it)
         }
 
-        mMap.setOnInfoWindowClickListener { marker ->
-            marker.hideInfoWindow()
+        mMap.setOnInfoWindowClickListener {
+            it.hideInfoWindow()
         }
 
     }

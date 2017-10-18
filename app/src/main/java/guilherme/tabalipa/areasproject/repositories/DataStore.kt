@@ -14,22 +14,23 @@ open class DataStore {
 
     companion object {
         val liveDataListLocais: MutableLiveData<MutableList<Local>> = MutableLiveData()
+        val liveDataListLocaisPorUsuario: MutableLiveData<MutableList<Local>> = MutableLiveData()
 
         private val mDatabase : DatabaseReference = FirebaseDatabase.getInstance().reference
 
         fun saveLocal(local : Local) {
 
-            mDatabase.child("locais").child(AreasApplication.getInstance().uid).push()
+            val key = mDatabase.child("locais").child(AreasApplication.getInstance().uid).push().key
             val locaisValues = local.toMap()
 
             val childUpdates = HashMap<String, Any>()
-            childUpdates.put("/locais/" + AreasApplication.getInstance().uid, locaisValues)
+            childUpdates.put("/locais/" + AreasApplication.getInstance().uid + "/" + key, locaisValues)
 
             mDatabase.updateChildren(childUpdates)
         }
 
         fun updateLocais() {
-            val listLocais: MutableList<Local> = mutableListOf()
+            var listLocais: MutableList<Local>
 
             val locaisListener = object : ValueEventListener {
 
@@ -38,14 +39,40 @@ open class DataStore {
                 }
 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    dataSnapshot.children.mapNotNullTo(listLocais) {
-                        it.getValue<Local>(Local::class.java)
+                    listLocais = mutableListOf()
+                    dataSnapshot.children.forEach {
+                        it.children.mapNotNullTo(listLocais) {
+                            it.getValue<Local>(Local::class.java)
+                        }
                     }
                     liveDataListLocais.value = listLocais
                 }
             }
 
             val locais = mDatabase.child("locais")
+            locais.addValueEventListener(locaisListener)
+        }
+
+        fun updateLocaisPorUsuario() {
+            var listLocais: MutableList<Local>
+
+            val locaisListener = object : ValueEventListener {
+
+                override fun onCancelled(erro: DatabaseError) {
+                    Toast.makeText(AreasApplication.getInstance().applicationContext, "Erro: " + erro.message, Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    listLocais = mutableListOf()
+                    dataSnapshot.children.mapNotNullTo(listLocais) {
+                        it.getValue<Local>(Local::class.java)
+                    }
+
+                    liveDataListLocaisPorUsuario.value = listLocais
+                }
+            }
+
+            val locais = mDatabase.child("locais").child(AreasApplication.getInstance().uid)
             locais.addValueEventListener(locaisListener)
         }
     }

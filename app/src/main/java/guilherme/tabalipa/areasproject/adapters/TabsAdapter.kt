@@ -14,19 +14,18 @@ import guilherme.tabalipa.areasproject.places.view.MarkedPlacesFragment
 class TabsAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
-        when (position) {
-            0 -> return MapFragment()
-            else -> return MarkedPlacesFragment()
+        return when (position) {
+            0 -> MapFragment()
+            else -> MarkedPlacesFragment()
         }
     }
 
     override fun getPageTitle(position: Int): CharSequence {
-        when (position) {
-            0 -> return context.getString(R.string.tab_map)
-            else -> return context.getString(R.string.tab_places)
+        return when (position) {
+            0 -> context.getString(R.string.tab_map)
+            else -> context.getString(R.string.tab_places)
         }
     }
 
     override fun getCount(): Int = 2
-
 }
