@@ -21,22 +21,13 @@
             android:id="@+id/tv_descricao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            tools:text="Algo hshajhajkshdkashdkahsdkhsk"/>
+            android:layout_marginBottom="5dp" />
 
         <TextView
-            android:id="@+id/tv_latitude"
+            android:id="@+id/tv_endereco"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            tools:text="-3363633631276"/>
-
-        <TextView
-            android:id="@+id/tv_longitude"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            tools:text="-3363633631276"/>
+            android:layout_marginBottom="5dp" />
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

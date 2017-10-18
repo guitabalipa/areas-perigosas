@@ -68,7 +68,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
         DataStore.liveDataListLocais.observe(activity, Observer<MutableList<Local>>{
             it?.forEach {
                 val marker = mMap.addMarker(MarkerOptions().position(LatLng(it.latitude, it.longitude)))
-                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
                 marker.title = it.descricao
             }
         })
