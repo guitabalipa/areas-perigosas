@@ -66,11 +66,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
                 if (it != null) {
                     myLocation = LatLng(it.latitude, it.longitude)
                     animateCamera(myLocation)
+                    DataStore.updateLocais()
                 }
             }
         }
-
-        DataStore.updateLocais()
 
         DataStore.liveDataListLocais.observe(activity, Observer<MutableList<Local>>{
             listItems = mutableListOf()
@@ -113,7 +112,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
     private fun animateCamera(myLocation: LatLng) {
         val cameraPosition = CameraPosition.Builder()
                 .target(myLocation)
-                .zoom(15f)
+                .zoom(10f)
                 .bearing(90f)
                 .tilt(40f)
                 .build()
@@ -122,6 +121,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
 
     private fun setupClusterer() {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 10f))
+        mMap.clear()
 
         mClusterManager = ClusterManager(context, mMap)
 
