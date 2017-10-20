@@ -22,8 +22,12 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import android.widget.EditText
 import com.google.android.gms.maps.model.*
+import com.google.maps.android.clustering.ClusterManager
+import guilherme.tabalipa.areasproject.map.model.Item
 import guilherme.tabalipa.areasproject.map.model.Local
 import guilherme.tabalipa.areasproject.repositories.DataStore
+import com.google.android.gms.maps.model.LatLng
+import guilherme.tabalipa.areasproject.map.model.CustomClusterRenderer
 
 
 /**
@@ -33,6 +37,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
 
     private lateinit var mMap: GoogleMap
     private lateinit var mFusedLocationClient : FusedLocationProviderClient
+    private lateinit var mClusterManager : ClusterManager<Item>
+    private lateinit var myLocation : LatLng
+    private var listItems : MutableList<Item>? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -57,7 +64,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
 
             mFusedLocationClient.lastLocation.addOnSuccessListener {
                 if (it != null) {
-                    val myLocation = LatLng(it.latitude, it.longitude)
+                    myLocation = LatLng(it.latitude, it.longitude)
                     animateCamera(myLocation)
                 }
             }
@@ -66,14 +73,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
         DataStore.updateLocais()
 
         DataStore.liveDataListLocais.observe(activity, Observer<MutableList<Local>>{
+            listItems = mutableListOf()
             it?.forEach {
-                val marker = mMap.addMarker(MarkerOptions().position(LatLng(it.latitude, it.longitude)))
-                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
-                marker.title = it.descricao
+                addItem(it)
             }
+            setupClusterer()
         })
 
-        mMap.setOnMapClickListener {
+        mMap.setOnMapLongClickListener {
             dialog(it)
         }
 
@@ -111,5 +118,31 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
                 .tilt(40f)
                 .build()
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+    }
+
+    private fun setupClusterer() {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 10f))
+
+        mClusterManager = ClusterManager(context, mMap)
+
+        val renderer = CustomClusterRenderer(context, mMap, mClusterManager)
+        mClusterManager.renderer = renderer
+
+        mMap.setOnCameraIdleListener(mClusterManager)
+        mMap.setOnMarkerClickListener(mClusterManager)
+
+        addItemsToCluster()
+    }
+
+    private fun addItem(local: Local) {
+        val item = Item(local.latitude, local.longitude)
+        item.mTitle = local.descricao
+        listItems?.add(item)
+    }
+
+    private fun addItemsToCluster() {
+        for (item in listItems!!) {
+            mClusterManager.addItem(item)
+        }
     }
 }

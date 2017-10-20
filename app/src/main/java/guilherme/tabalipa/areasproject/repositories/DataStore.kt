@@ -35,7 +35,7 @@ open class DataStore {
             val locaisListener = object : ValueEventListener {
 
                 override fun onCancelled(erro: DatabaseError) {
-                    Toast.makeText(AreasApplication.getInstance().applicationContext, "Erro: " + erro.message, Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(AreasApplication.getInstance().applicationContext, "Erro: " + erro.message, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -59,7 +59,7 @@ open class DataStore {
             val locaisListener = object : ValueEventListener {
 
                 override fun onCancelled(erro: DatabaseError) {
-                    Toast.makeText(AreasApplication.getInstance().applicationContext, "Erro: " + erro.message, Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(AreasApplication.getInstance().applicationContext, "Erro: " + erro.message, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {

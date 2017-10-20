@@ -1,6 +1,6 @@
 <resources>
     <string name="areas_project_key">AIzaSyAfNdpAbNowwjLRGtLkGVt0TS311EpvgYc</string>
-    <string name="app_name">Areas Perigosas</string>
+    <string name="app_name">Áreas Perigosas</string>
     <string name="action_settings">Settings</string>
     <string name="action_exit">Sair</string>
     <string name="tab_map">MAPA</string>
@@ -9,4 +9,5 @@
     <string name="cancel">Cancelar</string>
     <string name="save">Salvar</string>
     <string name="alerta_login">Login não autorizado</string>
+    <string name="marked_image">Imagem Marcada</string>
 </resources>
