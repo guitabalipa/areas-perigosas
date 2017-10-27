@@ -66,18 +66,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
                 if (it != null) {
                     myLocation = LatLng(it.latitude, it.longitude)
                     animateCamera(myLocation)
+                    observeDatastore()
                     DataStore.updateLocais()
                 }
             }
         }
-
-        DataStore.liveDataListLocais.observe(activity, Observer<MutableList<Local>>{
-            listItems = mutableListOf()
-            it?.forEach {
-                addItem(it)
-            }
-            setupClusterer()
-        })
 
         mMap.setOnMapLongClickListener {
             dialog(it)
@@ -87,6 +80,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPerm
             it.hideInfoWindow()
         }
 
+    }
+
+    private fun observeDatastore() {
+        DataStore.liveDataListLocais.observe(activity, Observer<MutableList<Local>>{
+            listItems = mutableListOf()
+            it?.forEach {
+                addItem(it)
+            }
+            setupClusterer()
+        })
     }
 
     private fun dialog(latLng : LatLng) {
